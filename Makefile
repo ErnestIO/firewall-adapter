@@ -20,7 +20,3 @@ dev-deps:
 
 clean:
 	go clean
-
-dist-clean:
-	rm -rf pkg src bin
-
