@@ -41,7 +41,7 @@ func getConnectorTypes(ctype string) []string {
 	return connectors[ctype]
 }
 
-func main() {
+func setup() {
 	nc = ecc.NewConfig(os.Getenv("NATS_URI")).Nats()
 
 	c := o.Config{
@@ -50,9 +50,13 @@ func main() {
 	}
 
 	log.Println("Setting up firewalls")
-	o.StandardSubscription(&c, "firewall.create", "datacenter_type")
-	o.StandardSubscription(&c, "firewall.update", "datacenter_type")
-	o.StandardSubscription(&c, "firewall.delete", "datacenter_type")
+	t := Translator{}
+	o.TranslatedSubscription(&c, "firewall.create", "_type", t)
+	o.TranslatedSubscription(&c, "firewall.update", "_type", t)
+	o.TranslatedSubscription(&c, "firewall.delete", "_type", t)
+}
 
+func main() {
+	setup()
 	runtime.Goexit()
 }
