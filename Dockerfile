@@ -7,4 +7,4 @@ WORKDIR /go/src/github.com/ernestio/firewall-adapter
 
 RUN make deps && go install
 
-ENTRYPOINT /go/bin/firewall-adapter
+ENTRYPOINT ./entrypoint.sh
