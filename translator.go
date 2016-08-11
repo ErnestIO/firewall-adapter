@@ -157,9 +157,10 @@ func (t Translator) builderToAwsConnector(input builderEvent) []byte {
 		from, _ := strconv.Atoi(r.SourcePort)
 		to, _ := strconv.Atoi(r.DestinationPort)
 		rule := awsRule{
-			IP:   r.SourceIP,
-			From: from,
-			To:   to,
+			IP:       r.SourceIP,
+			From:     from,
+			To:       to,
+			Protocol: r.Protocol,
 		}
 		if r.Type == "ingress" {
 			output.SecurityGroupRules.Ingress = append(output.SecurityGroupRules.Ingress, rule)
