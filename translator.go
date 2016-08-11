@@ -254,7 +254,7 @@ func (t Translator) awsConnectorToBuilder(j []byte) []byte {
 		from := strconv.Itoa(r.From)
 		to := strconv.Itoa(r.To)
 		output.Rules = append(output.Rules, rule{
-			Type:            "ingress",
+			Type:            "egress",
 			SourceIP:        r.IP,
 			SourcePort:      from,
 			DestinationPort: to,
