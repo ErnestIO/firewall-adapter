@@ -38,7 +38,7 @@ type builderEvent struct {
 	DatacenterAccessToken string `json:"datacenter_token"`
 	DatacenterAccessKey   string `json:"datacenter_secret"`
 	NetworkName           string `json:"network_name"`
-	SecurityGroupAWSIDs   string `json:"security_group_aws_ids"`
+	SecurityGroupAWSID    string `json:"security_group_aws_id"`
 	VCloudURL             string `json:"vcloud_url"`
 	Status                string `json:"status"`
 	ErrorCode             string `json:"error_code"`
@@ -85,7 +85,7 @@ type awsEvent struct {
 	DatacenterAccessKey   string `json:"datacenter_access_key"`
 	DatacenterVPCID       string `json:"datacenter_vpc_id"`
 	SecurityGroupName     string `json:"security_group_name"`
-	SecurityGroupAWSIDs   string `json:"security_group_aws_ids"`
+	SecurityGroupAWSID    string `json:"security_group_aws_id"`
 	SecurityGroupRules    struct {
 		Ingress []awsRule `json:"ingress"`
 		Egress  []awsRule `json:"egress"`
@@ -152,6 +152,7 @@ func (t Translator) builderToAwsConnector(input builderEvent) []byte {
 	output.DatacenterAccessToken = input.DatacenterAccessToken
 	output.DatacenterAccessKey = input.DatacenterAccessKey
 	output.DatacenterVPCID = input.DatacenterName
+	output.SecurityGroupAWSID = input.SecurityGroupAWSID
 	output.SecurityGroupName = input.Name
 	for _, r := range input.Rules {
 		from, _ := strconv.Atoi(r.SourcePort)
@@ -237,7 +238,7 @@ func (t Translator) awsConnectorToBuilder(j []byte) []byte {
 	output.DatacenterAccessToken = input.DatacenterAccessToken
 	output.DatacenterAccessKey = input.DatacenterAccessKey
 	output.DatacenterName = input.DatacenterVPCID
-	output.SecurityGroupAWSIDs = input.SecurityGroupAWSIDs
+	output.SecurityGroupAWSID = input.SecurityGroupAWSID
 
 	for _, r := range input.SecurityGroupRules.Ingress {
 		from := strconv.Itoa(r.From)
