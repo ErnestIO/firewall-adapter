@@ -70,9 +70,10 @@ type vcloudEvent struct {
 }
 
 type awsRule struct {
-	Destination string `json:"destination_ip"`
-	From        int    `json:"from_port"`
-	To          int    `json:"to_port"`
+	IP       string `json:"ip"`
+	From     int    `json:"from_port"`
+	To       int    `json:"to_port"`
+	Protocol string `json:"protocol"`
 }
 
 type awsEvent struct {
@@ -87,7 +88,7 @@ type awsEvent struct {
 	SecurityGroupAWSIDs   string `json:"security_group_aws_ids"`
 	SecurityGroupRules    struct {
 		Ingress []awsRule `json:"ingress"`
-		Engress []awsRule `json:"engress"`
+		Egress  []awsRule `json:"egress"`
 	} `json:"security_group_rules"`
 	Status       string `json:"status"`
 	ErrorCode    string `json:"error_code"`
@@ -156,14 +157,14 @@ func (t Translator) builderToAwsConnector(input builderEvent) []byte {
 		from, _ := strconv.Atoi(r.SourcePort)
 		to, _ := strconv.Atoi(r.DestinationPort)
 		rule := awsRule{
-			Destination: r.DestinationIP,
-			From:        from,
-			To:          to,
+			IP:   r.SourceIP,
+			From: from,
+			To:   to,
 		}
 		if r.Type == "ingress" {
 			output.SecurityGroupRules.Ingress = append(output.SecurityGroupRules.Ingress, rule)
 		} else {
-			output.SecurityGroupRules.Engress = append(output.SecurityGroupRules.Engress, rule)
+			output.SecurityGroupRules.Egress = append(output.SecurityGroupRules.Egress, rule)
 		}
 	}
 
@@ -236,7 +237,31 @@ func (t Translator) awsConnectorToBuilder(j []byte) []byte {
 	output.DatacenterAccessKey = input.DatacenterAccessKey
 	output.DatacenterName = input.DatacenterVPCID
 	output.SecurityGroupAWSIDs = input.SecurityGroupAWSIDs
-	// TODO Rules
+
+	for _, r := range input.SecurityGroupRules.Ingress {
+		from := strconv.Itoa(r.From)
+		to := strconv.Itoa(r.To)
+		output.Rules = append(output.Rules, rule{
+			Type:            "ingress",
+			SourceIP:        r.IP,
+			SourcePort:      from,
+			DestinationPort: to,
+			Protocol:        r.Protocol,
+		})
+	}
+
+	for _, r := range input.SecurityGroupRules.Egress {
+		from := strconv.Itoa(r.From)
+		to := strconv.Itoa(r.To)
+		output.Rules = append(output.Rules, rule{
+			Type:            "ingress",
+			SourceIP:        r.IP,
+			SourcePort:      from,
+			DestinationPort: to,
+			Protocol:        r.Protocol,
+		})
+	}
+
 	output.Status = input.Status
 	output.ErrorCode = input.ErrorCode
 	output.ErrorMessage = input.ErrorMessage
