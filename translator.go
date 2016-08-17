@@ -90,9 +90,7 @@ type awsEvent struct {
 		Ingress []awsRule `json:"ingress"`
 		Egress  []awsRule `json:"egress"`
 	} `json:"security_group_rules"`
-	Status       string `json:"status"`
-	ErrorCode    string `json:"error_code"`
-	ErrorMessage string `json:"error_message"`
+	ErrorMessage string `json:"error"`
 }
 
 type Translator struct{}
@@ -170,10 +168,6 @@ func (t Translator) builderToAwsConnector(input builderEvent) []byte {
 		}
 	}
 
-	output.Status = input.Status
-	output.ErrorCode = input.ErrorCode
-	output.ErrorMessage = input.ErrorMessage
-
 	body, _ := json.Marshal(output)
 
 	return body
@@ -217,9 +211,12 @@ func (t Translator) vcloudConnectorToBuilder(j []byte) []byte {
 	output.DatacenterPassword = input.DatacenterPassword
 	output.DatacenterType = input.DatacenterType
 	output.VCloudURL = input.VCloudURL
-	output.Status = input.Status
-	output.ErrorCode = input.ErrorCode
-	output.ErrorMessage = input.ErrorMessage
+
+	if input.ErrorMessage != "" {
+		output.Status = "errored"
+		output.ErrorCode = "0"
+		output.ErrorMessage = input.ErrorMessage
+	}
 
 	body, _ := json.Marshal(output)
 
@@ -264,9 +261,11 @@ func (t Translator) awsConnectorToBuilder(j []byte) []byte {
 		})
 	}
 
-	output.Status = input.Status
-	output.ErrorCode = input.ErrorCode
-	output.ErrorMessage = input.ErrorMessage
+	if input.ErrorMessage != "" {
+		output.Status = "errored"
+		output.ErrorCode = "0"
+		output.ErrorMessage = input.ErrorMessage
+	}
 
 	body, _ := json.Marshal(output)
 
