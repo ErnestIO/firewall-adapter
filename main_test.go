@@ -38,10 +38,10 @@ func TestBasicRedirections(t *testing.T) {
 		chvcl := make(chan bool)
 
 		n.Subscribe("config.get.connectors", func(msg *nats.Msg) {
-			n.Publish(msg.Reply, []byte(`{"executions":["fake","salt"],"firewalls":["fake","vcloud"],"instances":["fake","vcloud"],"nats":["fake","vcloud"],"networks":["fake","vcloud"],"routers":["fake","vcloud"]}`))
+			n.Publish(msg.Reply, []byte(`{"firewalls":["fake","vcloud","vcloud-fake","aws","aws-fake"]}`))
 		})
 
-		go main()
+		setup()
 
 		n.Subscribe("firewall.create.fake", func(msg *nats.Msg) {
 			chfak <- true
@@ -54,8 +54,8 @@ func TestBasicRedirections(t *testing.T) {
 		})
 		Convey("When it receives an invalid fake message", func() {
 			n.Publish("firewall.create", []byte(`{"service":"aaa"}`))
-			Convey("Then it should redirect it to a fake connector", func() {
-				So(wait(cherr), ShouldNotBeNil)
+			Convey("Then it should redirect it to firewall error creation", func() {
+				So(wait(cherr), ShouldBeNil)
 			})
 		})
 		Convey("When it receives a valid fake message", func() {
