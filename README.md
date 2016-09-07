@@ -4,8 +4,8 @@ firewall Adapter gets input nats messages in order to create, update or delete f
 
 ## Build status
 
-* master:  [![CircleCI](https://circleci.com/gh/ErnestIO/firewall-adapter/tree/master.svg?style=svg)](https://circleci.com/gh/ErnestIO/firewall-adapter/tree/master)
-* develop: [![CircleCI](https://circleci.com/gh/ErnestIO/firewall-adapter/tree/develop.svg?style=svg)](https://circleci.com/gh/ErnestIO/firewall-adapter/tree/develop)
+* master:  [![CircleCI](https://circleci.com/gh/ernestio/firewall-adapter/tree/master.svg?style=svg)](https://circleci.com/gh/ernestio/firewall-adapter/tree/master)
+* develop: [![CircleCI](https://circleci.com/gh/ernestio/firewall-adapter/tree/develop.svg?style=svg)](https://circleci.com/gh/ernestio/firewall-adapter/tree/develop)
 
 ## Installation
 
