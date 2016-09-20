@@ -43,6 +43,7 @@ type builderEvent struct {
 	Status                string `json:"status"`
 	ErrorCode             string `json:"error_code"`
 	ErrorMessage          string `json:"error_message"`
+	VpcID                 string `json:"vpc_id"`
 }
 
 type vcloudEvent struct {
@@ -149,7 +150,7 @@ func (t Translator) builderToAwsConnector(input builderEvent) []byte {
 	output.DatacenterRegion = input.DatacenterRegion
 	output.DatacenterAccessToken = input.DatacenterAccessToken
 	output.DatacenterAccessKey = input.DatacenterAccessKey
-	output.DatacenterVPCID = input.DatacenterName
+	output.DatacenterVPCID = input.VpcID
 	output.SecurityGroupAWSID = input.SecurityGroupAWSID
 	output.SecurityGroupName = input.Name
 	for _, r := range input.Rules {
@@ -234,8 +235,8 @@ func (t Translator) awsConnectorToBuilder(j []byte) []byte {
 	output.DatacenterRegion = input.DatacenterRegion
 	output.DatacenterAccessToken = input.DatacenterAccessToken
 	output.DatacenterAccessKey = input.DatacenterAccessKey
-	output.DatacenterName = input.DatacenterVPCID
 	output.SecurityGroupAWSID = input.SecurityGroupAWSID
+	output.VpcID = input.DatacenterVPCID
 
 	for _, r := range input.SecurityGroupRules.Ingress {
 		from := strconv.Itoa(r.From)
